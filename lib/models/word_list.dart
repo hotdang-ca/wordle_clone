@@ -2317,8 +2317,8 @@ final List<String> wordList = [
   "shave"
 ];
 
-/// A list of uncommon words. Not sure why these are here. Probably don't use them.
-@Deprecated('Not sure why these words exist.')
+/// A list of uncommon words.
+/// If a guess isn't in this list, it's not a valid dictionary word.
 final List<String> uncommonWordList = [
   "aahed",
   "aalii",

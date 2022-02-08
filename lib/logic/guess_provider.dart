@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wordle_clone/models/word_list.dart';
 import 'package:wordle_clone/models/wordle_result.dart';
 
 class GuessProvider with ChangeNotifier {
   static const maxGuesses = 6;
 
   late bool isWinner;
+
+  late String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
   /// This guess's word
   late String _currentWordGuess;
@@ -29,9 +33,11 @@ class GuessProvider with ChangeNotifier {
   int get currentGuess => _currentGuess;
 
   GuessProvider() {
-    print('Creating new game!\n\nGood luck!');
+    initGame();
+  }
 
-    // init the game
+  // creates a new game
+  void initGame() {
     wordleResult = WordleResult.fromWordList();
     _currentWordGuess = '';
     currentGuessIndex = 0;
@@ -39,6 +45,16 @@ class GuessProvider with ChangeNotifier {
     _previousWordGuesses = <String>[];
     _previousResults = <List<WordlePositionResult>>[];
     isWinner = false;
+    _errorMessage = null;
+
+    notifyListeners();
+  }
+
+  void clearErrors() {
+    _errorMessage = null;
+    notifyListeners();
+
+    return;
   }
 
   void takeNextGuess(String word) {
@@ -56,7 +72,6 @@ class GuessProvider with ChangeNotifier {
     if (index >= currentGuessIndex) {
       // we're guessing out of order. Something bad.
       // throw ('Index greater than currentGuessIndex');
-      print('Guessing out of order');
       return '';
     }
 
@@ -88,6 +103,12 @@ class GuessProvider with ChangeNotifier {
     return result.elementAt(letterIndex);
   }
 
+  void newGame() {
+    // same as game init
+    // init the game
+    initGame();
+  }
+
   void handleKeyEvent(KeyEvent keyEvent) {
     // Not interested
     if (keyEvent is KeyUpEvent) return;
@@ -97,10 +118,15 @@ class GuessProvider with ChangeNotifier {
     // listen to 'ENTER' key
     if ([LogicalKeyboardKey.enter, LogicalKeyboardKey.numpadEnter]
         .contains(logicalKey)) {
-      print('I heard ENTER');
       // enter was pressed! Do the guess!
       if (currentWord.length > currentGuessIndex) {
-        print('Not 5 chars yet');
+        return;
+      }
+
+      if (![...uncommonWordList, ...wordList].contains(_currentWordGuess)) {
+        _errorMessage = 'That\'s not a real word :p\nTry again.';
+        notifyListeners();
+
         return;
       }
 
@@ -108,7 +134,6 @@ class GuessProvider with ChangeNotifier {
 
       // Get a wordle result
       var guessResult = wordleResult.guessResult(_currentWordGuess);
-      print(guessResult);
       _previousResults.add(guessResult);
 
       isWinner = WordleResult.isWinner(guessResult);
@@ -123,7 +148,6 @@ class GuessProvider with ChangeNotifier {
 
     // Listen to 'ESC' key -- cancel a guess
     if (logicalKey == LogicalKeyboardKey.escape) {
-      print('I heard ESCAPE');
       _currentWordGuess = ''; // TODO: create a "new game" method
       currentGuessIndex = 0;
 
@@ -144,14 +168,13 @@ class GuessProvider with ChangeNotifier {
       return;
     }
 
+    // TODO: handle numbers/symbols
     if (keyEvent.character == null) {
       // some other control char
-      print('I heard some other key: ${keyEvent.logicalKey.keyLabel}');
       return;
     }
 
     if (currentGuessIndex >= currentWord.length) {
-      print('Too many chars!');
       return;
     }
 

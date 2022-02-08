@@ -25,8 +25,6 @@ class WordleResult {
   }
 
   List<WordlePositionResult> guessResult(String guess) {
-    print('Guessing: [$guess]');
-
     if (guess.length != 5) {
       throw ('Incorrect length.');
     }
