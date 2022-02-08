@@ -86,38 +86,40 @@ class WordleHome extends StatelessWidget {
               focusNode: focusNode,
               autofocus: true,
               onKeyEvent: context.read<GuessProvider>().handleKeyEvent,
-              child: Column(
-                children: <Widget>[
-                  const WordleGuessRow(
-                    guessAttempt: 0,
-                  ),
-                  const WordleGuessRow(
-                    guessAttempt: 1,
-                  ),
-                  const WordleGuessRow(
-                    guessAttempt: 2,
-                  ),
-                  const WordleGuessRow(
-                    guessAttempt: 3,
-                  ),
-                  const WordleGuessRow(
-                    guessAttempt: 4,
-                  ),
-                  const WordleGuessRow(
-                    guessAttempt: 5,
-                  ),
-                  if (kDebugMode)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                            'Guess: ${context.read<GuessProvider>().currentGuess + 1}/${GuessProvider.maxGuesses}\n${context.read<GuessProvider>().currentWordGuess}'),
-                        Text(context.read<GuessProvider>().currentWord),
-                        Text(
-                            'Letter Index: ${context.read<GuessProvider>().currentGuessIndex + 1}/5'),
-                      ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    const WordleGuessRow(
+                      guessAttempt: 0,
                     ),
-                ],
+                    const WordleGuessRow(
+                      guessAttempt: 1,
+                    ),
+                    const WordleGuessRow(
+                      guessAttempt: 2,
+                    ),
+                    const WordleGuessRow(
+                      guessAttempt: 3,
+                    ),
+                    const WordleGuessRow(
+                      guessAttempt: 4,
+                    ),
+                    const WordleGuessRow(
+                      guessAttempt: 5,
+                    ),
+                    if (kDebugMode)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                              'Guess: ${context.read<GuessProvider>().currentGuess + 1}/${GuessProvider.maxGuesses}\n${context.read<GuessProvider>().currentWordGuess}'),
+                          Text(context.read<GuessProvider>().currentWord),
+                          Text(
+                              'Letter Index: ${context.read<GuessProvider>().currentGuessIndex + 1}/5'),
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
     );

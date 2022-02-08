@@ -29,8 +29,32 @@ class WordleGuessBox extends StatelessWidget {
     }
   }
 
+  double _findAppropriateWidthForContext(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 414.0) {
+      return 60.0;
+    }
+
+    return 100.0;
+  }
+
+  double _findAppropriateHeightForContext(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    if (screenWidth <= 414.0) {
+      return 72.0;
+    }
+
+    return 110.0;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final double _scaleAppropriateWidth =
+        _findAppropriateWidthForContext(context);
+    final double _scaleAppropriateHeight =
+        _findAppropriateHeightForContext(context);
+
     BoxDecoration boxDecoration = BoxDecoration(
       border: Border.all(color: Colors.blueGrey, width: 1),
       color: _colorForWordlePositionResult(result),
@@ -42,8 +66,8 @@ class WordleGuessBox extends StatelessWidget {
     );
 
     return SizedBox(
-      width: 100,
-      height: 110,
+      width: _scaleAppropriateWidth,
+      height: _scaleAppropriateHeight,
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.all(marginSize),
